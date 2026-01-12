@@ -46,7 +46,8 @@ void registerSparkArrayFunctions(const std::string& prefix) {
   VELOX_REGISTER_VECTOR_FUNCTION(udf_array_position, prefix + "array_position");
   VELOX_REGISTER_VECTOR_FUNCTION(udf_zip, prefix + "arrays_zip");
   VELOX_REGISTER_VECTOR_FUNCTION(udf_any_match, prefix + "exists");
-  VELOX_REGISTER_VECTOR_FUNCTION(udf_array_filter, prefix + "filter");
+  // Register Spark-specific array_filter in sparksql namespace instead.
+
   VELOX_REGISTER_VECTOR_FUNCTION(udf_all_match, prefix + "forall");
   VELOX_REGISTER_VECTOR_FUNCTION(udf_zip_with, prefix + "zip_with");
 }
@@ -258,6 +259,8 @@ void registerArrayFunctions(const std::string& prefix) {
       Array<Generic<T1>>,
       Generic<T1>>({prefix + "array_append"});
   registerArrayUnionFunctions(prefix);
+  // Register Spark-specific array_filter here to match function namespace.
+  VELOX_REGISTER_VECTOR_FUNCTION(udf_spark_array_filter, prefix + "filter");
   registerArrayCompactFunctions(prefix);
 }
 
