@@ -28,7 +28,7 @@ namespace {
 // Spark SQL array filter function with indexed lambda support.
 // Supports two signatures:
 // 1. array(T), function(T, boolean) -> array(T)
-// 2. array(T), function(T, bigint, boolean) -> array(T)
+// 2. array(T), function(T, integer, boolean) -> array(T)
 class SparkArrayFilterFunction : public exec::VectorFunction {
  public:
   void apply(
@@ -114,12 +114,12 @@ class SparkArrayFilterFunction : public exec::VectorFunction {
             .argumentType("array(T)")
             .argumentType("function(T,boolean)")
             .build(),
-        // array(T), function(T, bigint, boolean) -> array(T)
+        // array(T), function(T, integer, boolean) -> array(T)
         exec::FunctionSignatureBuilder()
             .typeVariable("T")
             .returnType("array(T)")
             .argumentType("array(T)")
-            .argumentType("function(T,bigint,boolean)")
+            .argumentType("function(T,integer,boolean)")
             .build()};
   }
 
@@ -132,12 +132,12 @@ class SparkArrayFilterFunction : public exec::VectorFunction {
       const SelectivityVector& rows,
       vector_size_t numElements,
       memory::MemoryPool* pool) {
-    auto indices = std::make_shared<FlatVector<int64_t>>(
+    auto indices = std::make_shared<FlatVector<int32_t>>(
         pool,
-        BIGINT(),
+        INTEGER(),
         BufferPtr(nullptr),
         numElements,
-        AlignedBuffer::allocate<int64_t>(numElements, pool),
+        AlignedBuffer::allocate<int32_t>(numElements, pool),
         std::vector<BufferPtr>());
 
     auto* rawIndices = indices->mutableRawValues();
